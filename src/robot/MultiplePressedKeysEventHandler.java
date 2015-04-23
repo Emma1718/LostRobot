@@ -38,4 +38,5 @@ public class MultiplePressedKeysEventHandler implements EventHandler<KeyEvent> {
             return buffer.contains(key);
         }
     }
+
 }
