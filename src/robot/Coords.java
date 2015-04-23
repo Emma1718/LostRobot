@@ -7,7 +7,7 @@ public class Coords {
     double x;
     double y;
 
-    private Coords(double x, double y) {
+    public Coords(double x, double y) {
         this.x = x;
         this.y = y;
     }
@@ -28,5 +28,15 @@ public class Coords {
         this.x = x;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Coords coords = (Coords) o;
+
+        return Double.compare(coords.x, x) == 0 && Double.compare(coords.y, y) == 0;
+
+    }
 
 }

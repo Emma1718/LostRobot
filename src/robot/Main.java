@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
@@ -15,12 +16,16 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main extends Application {
     private static final int KEYBOARD_MOVEMENT_DELTA = 5;
     private static final Duration TRANSLATE_DURATION = Duration.seconds(0.25);
     World world;
     Canvas canvas;
     Pane root;
+    List<Circle> landmarks = new ArrayList<>();
 
     public void createWorld() {
         world = new World();
@@ -31,10 +36,13 @@ public class Main extends Application {
         root = new Pane();
         canvas = new Canvas(World.WIDTH, World.HEIGHT);
         canvas.setFocusTraversable(true);
-
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.setFill(Color.CORNFLOWERBLUE);
+        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         root.getChildren().add(canvas);
         return new Scene(root, World.WIDTH, World.HEIGHT);
     }
+
 
 
     @Override
@@ -42,13 +50,8 @@ public class Main extends Application {
 
         createWorld();
         Scene scene = createScene();
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.setFill(Color.ALICEBLUE);
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        final Circle circle = new Circle(200, 150, 35, Color.BLUEVIOLET);
-        circle.setOpacity(0.7);
+        final Circle circle = new Circle(world.getRobot().getX(), world.getRobot().getY(), 30, Color.BLUEVIOLET);
 
-        root.getChildren().add(circle);
         final MultiplePressedKeysEventHandler keyHandler =
                 new MultiplePressedKeysEventHandler(new MultiplePressedKeysEventHandler.MultiKeyEventHandler() {
 
@@ -67,33 +70,59 @@ public class Main extends Application {
                         }
                         if (ke.isPressed(KeyCode.LEFT)  && ke.isPressed(KeyCode.UP)) {
                             world.interact(45);
-                            circle.setCenterX(circle.getCenterX() - KEYBOARD_MOVEMENT_DELTA);
+                           // circle.setCenterX(circle.getCenterX() - KEYBOARD_MOVEMENT_DELTA);
                         }
                         if (ke.isPressed(KeyCode.RIGHT) && ke.isPressed(KeyCode.UP)) {
                             world.interact(315);
-
-                            circle.setCenterX(circle.getCenterX() + KEYBOARD_MOVEMENT_DELTA);
+                            //circle.setCenterX(circle.getCenterX() + KEYBOARD_MOVEMENT_DELTA);
                         }
 
                         if (ke.isPressed(KeyCode.RIGHT) && ke.isPressed(KeyCode.DOWN)) {
                             world.interact(225);
-
-                            circle.setCenterY(circle.getCenterY() - KEYBOARD_MOVEMENT_DELTA);
+                           // circle.setCenterY(circle.getCenterY() - KEYBOARD_MOVEMENT_DELTA);
                         }
                         if (ke.isPressed(KeyCode.LEFT)  && ke.isPressed(KeyCode.DOWN)) {
                             world.interact(135);
 
-                            circle.setCenterY(circle.getCenterY() + KEYBOARD_MOVEMENT_DELTA);
+                           // circle.setCenterY(circle.getCenterY() + KEYBOARD_MOVEMENT_DELTA);
                         }
                     }
                 });
         scene.setOnKeyPressed(keyHandler);
         scene.setOnKeyReleased(keyHandler);
 
-
-
+        canvas.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                createLandmark(event.getX(), event.getY());
+            }
+        });
+        drawParticles();
+        root.getChildren().add(circle);
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    public void createLandmark(double x, double y) {
+        final Circle circle = new Circle(x, y, 10, Color.YELLOW);
+        root.getChildren().add(circle);
+        landmarks.add(circle);
+        world.addLandmark(x, y);
+        circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                root.getChildren().remove(circle);
+                landmarks.remove(circle);
+                world.removeLanmark(circle.getCenterX(), circle.getCenterY());
+            }
+        });
+    }
+
+    public void drawParticles() {
+        for(Particle p: world.generateParticles()) {
+            Circle circle = new Circle(p.getCoords().getX(), p.getCoords().getY(), 1, Color.RED);
+            root.getChildren().add(circle);
+        }
     }
 
 

@@ -7,6 +7,16 @@ public class Particle {
 
     private double distance;
     private double weight;
+    private Coords coords;
+
+    public Coords getCoords() {
+        return coords;
+    }
+
+    public void setCoords(Coords coords) {
+        this.coords = coords;
+    }
+
     public void sense(double distance) {
         this.distance = distance;
     }

@@ -5,30 +5,34 @@ package robot;
  */
 public class Robot {
     private double distance;
-    private double x;
-    private double y;
+    private Coords coords;
 
+    public Robot(Coords coords) {
+        this.coords = coords;
+    }
+
+
+    public Coords getCoords() {
+        return coords;
+    }
+
+    public void setCoords(Coords coords) {
+        this.coords = coords;
+    }
+
+    public double getX() {
+        return coords.getX();
+    }
+
+
+    public double getY() {
+        return coords.getY();
+    }
     public void sense(double distance) {
         this.distance = distance;
     }
 
     public double getSensorMeasurement() {
         return distance;
-    }
-
-    public double getX() {
-        return x;
-    }
-
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
     }
 }
