@@ -35,4 +35,9 @@ public class Robot {
     public double getSensorMeasurement() {
         return distance;
     }
+
+    public void move(double dx, double dy) {
+        coords.setX(getX() + dx);
+        coords.setY(getY() + dy);
+    }
 }

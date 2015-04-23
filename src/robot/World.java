@@ -34,7 +34,16 @@ public class World {
     }
 
     public void interact(int angle) {
-
+        System.out.println(Math.sin(angle*Math.PI/180) + " " + Math.cos(angle*Math.PI/180));
+        double newX = -3*Math.sin(angle*Math.PI/180);
+        double newY = -3*Math.cos(angle*Math.PI/180);
+        if(getRobot().getX() + newX < 0 || getRobot().getX() + newX > WIDTH) {
+            newX = 0;
+        }
+        if(getRobot().getY() + newY < 0 || getRobot().getY() + newY > HEIGHT) {
+            newY = 0;
+        }
+        robot.move(newX, newY);
     }
 
     public void addLandmark(double x, double y) {
@@ -48,7 +57,7 @@ public class World {
     }
 
     public List<Particle> generateParticles() {
-        for(int i = 0; i < 100000; i++) {
+        for(int i = 0; i < 5000; i++) {
             Particle particle = new Particle();
             Random r = new Random();
             double x = (double)WIDTH * r.nextDouble();

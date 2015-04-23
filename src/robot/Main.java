@@ -18,6 +18,7 @@ import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Main extends Application {
     private static final int KEYBOARD_MOVEMENT_DELTA = 5;
@@ -57,33 +58,52 @@ public class Main extends Application {
 
                     public void handle(MultiplePressedKeysEventHandler.MultiKeyEvent ke) {
                         if (ke.isPressed(KeyCode.LEFT) || ke.isPressed(KeyCode.A)) {
+                            System.out.println("LEFT");
                             world.interact(90);
+                            circle.setCenterX(world.getRobot().getX());
                         }
                         if (ke.isPressed(KeyCode.RIGHT) || ke.isPressed(KeyCode.A)) {
+                            System.out.println("RIGHT");
                             world.interact(270);
+                            circle.setCenterX(world.getRobot().getX());
                         }
                         if (ke.isPressed(KeyCode.UP) || ke.isPressed(KeyCode.A)) {
+                            System.out.println("UP");
                             world.interact(0);
+                            circle.setCenterY(world.getRobot().getY());
                         }
-                        if (ke.isPressed(KeyCode.LEFT) || ke.isPressed(KeyCode.A)) {
+                        if (ke.isPressed(KeyCode.DOWN) || ke.isPressed(KeyCode.A)) {
+                            System.out.println("DOWN");
                             world.interact(180);
+                            circle.setCenterY(world.getRobot().getY());
                         }
                         if (ke.isPressed(KeyCode.LEFT)  && ke.isPressed(KeyCode.UP)) {
+                            System.out.println("LEFT + UP");
                             world.interact(45);
-                           // circle.setCenterX(circle.getCenterX() - KEYBOARD_MOVEMENT_DELTA);
+                            circle.setCenterX(world.getRobot().getX());
+                            circle.setCenterY(world.getRobot().getY());
+                            // circle.setCenterX(circle.getCenterX() - KEYBOARD_MOVEMENT_DELTA);
                         }
                         if (ke.isPressed(KeyCode.RIGHT) && ke.isPressed(KeyCode.UP)) {
+                            System.out.println("RIGHT + UP");
                             world.interact(315);
+                            circle.setCenterX(world.getRobot().getX());
+                            circle.setCenterY(world.getRobot().getY());
                             //circle.setCenterX(circle.getCenterX() + KEYBOARD_MOVEMENT_DELTA);
                         }
 
                         if (ke.isPressed(KeyCode.RIGHT) && ke.isPressed(KeyCode.DOWN)) {
+                            System.out.println("RIGHT + DOWN");
                             world.interact(225);
+                            circle.setCenterX(world.getRobot().getX());
+                            circle.setCenterY(world.getRobot().getY());
                            // circle.setCenterY(circle.getCenterY() - KEYBOARD_MOVEMENT_DELTA);
                         }
                         if (ke.isPressed(KeyCode.LEFT)  && ke.isPressed(KeyCode.DOWN)) {
+                            System.out.println("LEFT + DOWN");
                             world.interact(135);
-
+                            circle.setCenterX(world.getRobot().getX());
+                            circle.setCenterY(world.getRobot().getY());
                            // circle.setCenterY(circle.getCenterY() + KEYBOARD_MOVEMENT_DELTA);
                         }
                     }
@@ -97,7 +117,12 @@ public class Main extends Application {
                 createLandmark(event.getX(), event.getY());
             }
         });
+
         drawParticles();
+        Random r = new Random();
+        double x = (double)World.WIDTH * r.nextDouble();
+        double y = (double)World.HEIGHT * r.nextDouble();
+        createLandmark(x, y);
         root.getChildren().add(circle);
         primaryStage.setScene(scene);
         primaryStage.show();
