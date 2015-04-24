@@ -1,7 +1,8 @@
 package robot;
 
-import java.text.ParseException;
 import java.util.*;
+
+import static java.lang.Math.abs;
 
 /**
  * Created by Paulina on 2015-04-23.
@@ -10,7 +11,7 @@ public class World {
 
     List<Coords> landmarksList = new ArrayList<>();
     Robot robot;
-    List<Particle> particles = new ArrayList<>();
+    public List<Particle> particles = new ArrayList<>();
     public static int HEIGHT = 700;
     public static int WIDTH = 1000;
 
@@ -53,6 +54,30 @@ public class World {
         }
 
         refresh();
+        resample();
+    }
+
+    private void resample() {
+        Random r = new Random();
+        double sum = 0.0;
+        double dist[] = new double[4000];
+        int i = 0;
+        int index = 0;
+        List<Particle> particlesCopy = new ArrayList<>(particles.size());
+        for (Particle p : particles) {
+            sum += p.getWeight();
+            dist[i++] = sum;
+            particlesCopy.add(new Particle(p));
+            System.out.println(p.getWeight());
+        }
+        System.out.println(sum);
+        System.out.println(r.nextDouble());
+        for (int j = 0; j < particles.size(); j++) {
+            index = abs(Arrays.binarySearch(dist, r.nextDouble()));
+            particles.get(j).setWeight(new Double(0.00025));
+            particles.get(j).setCoords(particlesCopy.get(index).getCoords());
+
+        }
     }
 
     public void refresh() {
@@ -83,9 +108,8 @@ public class World {
 
     }
 
-
     public double countDistance(Coords c1, Coords c2) {
-        double distance = Math.sqrt(Math.pow(Math.abs(c1.getX() - c2.getX()), 2) + Math.pow(Math.abs(c1.getY() - c2.getY()), 2));
+        double distance = Math.sqrt(Math.pow(abs(c1.getX() - c2.getX()), 2) + Math.pow(abs(c1.getY() - c2.getY()), 2));
         Random r = new Random();
         distance = r.nextGaussian() * Math.sqrt(1) + distance;
         return distance;
@@ -110,6 +134,4 @@ public class World {
             particles.add(particle);
         }
     }
-
-
 }

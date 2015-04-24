@@ -24,10 +24,10 @@ public class Robot {
         return coords.getX();
     }
 
-
     public double getY() {
         return coords.getY();
     }
+
     public void sense(double distance) {
         System.out.println("ROBOT: " + distance);
         this.distance = distance;

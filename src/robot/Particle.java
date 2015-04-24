@@ -16,6 +16,14 @@ public class Particle {
         tempWeight = 1;
     }
 
+    public Particle(Particle particle) {
+        this.distance = particle.distance;
+        this.weight = particle.weight;
+        this.coords = particle.coords;
+        this.size = 10;
+        this.tempWeight = particle.tempWeight;
+    }
+
     public double getSize() {
         return size;
     }
@@ -55,7 +63,7 @@ public class Particle {
 
     public void setWeight(double weight) {
         this.weight = weight;
-        size = 100 * weight;
+        //   size = 100 * weight;
     }
 
     public void move(double dx, double dy) {
