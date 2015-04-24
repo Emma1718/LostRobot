@@ -12,8 +12,8 @@ public class World {
     List<Coords> landmarksList = new ArrayList<>();
     Robot robot;
     public List<Particle> particles = new ArrayList<>();
-    public static int HEIGHT = 400;
-    public static int WIDTH = 500;
+    public static int HEIGHT = 700;
+    public static int WIDTH = 700;
     public static int PARTICLES_NUMBER = 5000;
     public static double NOISE_LEVEL = 0.001;
     public static double SIGMA = 1.0;
@@ -41,8 +41,8 @@ public class World {
         double newY = -3 * Math.cos(angle * Math.PI / 180);
 
         Random r = new Random();
-        double noiseX = (2* r.nextGaussian() * Math.sqrt(SIGMA)-1) +  newX;
-        double noiseY = (2*r.nextGaussian() * Math.sqrt(SIGMA)-1) + newY;
+        double noiseX = r.nextGaussian() * Math.sqrt(SIGMA) - 0.5 + newX;
+        double noiseY = r.nextGaussian() * Math.sqrt(SIGMA) - 0.5 + newY;
         if (getRobot().getX() + noiseX < 0 || getRobot().getX() + noiseX > WIDTH) {
             noiseX = 0;
         }
@@ -51,8 +51,8 @@ public class World {
         }
         robot.move(noiseX, noiseY);
         for (Particle p : particles) {
-            double noiseXX = (2*r.nextGaussian() * Math.sqrt(SIGMA)-1) + newX;
-            double noiseYY = (2*r.nextGaussian() * Math.sqrt(SIGMA)-1) + newY;
+            double noiseXX = r.nextGaussian() * Math.sqrt(SIGMA) - 0.5 + newX;
+            double noiseYY = r.nextGaussian() * Math.sqrt(SIGMA) - 0.5 + newY;
             p.move(noiseXX, noiseYY);
         }
 
@@ -103,8 +103,8 @@ public class World {
             System.out.println("index: " + index);
             particles.get(j).setWeight(1.0 / particles.size());
             Coords coords = particlesCopy.get(index).getCoords();
-            coords.setX(coords.getX() + r.nextGaussian() * Math.sqrt(SIGMA) * coords.getX() * NOISE_LEVEL);
-            coords.setY(coords.getY() + r.nextGaussian() * Math.sqrt(SIGMA) * coords.getY() * NOISE_LEVEL);
+            coords.setX(coords.getX());//+ r.nextGaussian() * Math.sqrt(SIGMA) -0.5);
+            coords.setY(coords.getY());//+ r.nextGaussian() * Math.sqrt(SIGMA) -0.5);
             particles.get(j).setCoords(coords);
             System.out.println(particles.get(j).getCoords());
         }
@@ -120,7 +120,7 @@ public class World {
                 p.sense(countDistance(p.getCoords(), coords));
                // System.out.println("Distance: " + p.getSensorMeasurement());
                 double xx = 1;/// Math.sqrt(sigma * 2 * Math.PI);
-                double yy = (-1 * Math.pow((p.getSensorMeasurement() - robot.getSensorMeasurement())/500, 2)) / (2 * sigma);
+                double yy = (-1 * Math.pow((p.getSensorMeasurement() - robot.getSensorMeasurement()) / (WIDTH * Math.sqrt(2)), 2)) / (2 * sigma);
                 System.out.println("yy: " + yy);
                 p.setTempWeight(p.getTempWeight() * xx * Math.exp(yy));
                 W += p.getTempWeight();
@@ -138,14 +138,14 @@ public class World {
             }
         }
 
-        //resample();
+        resample();
 
     }
 
     public double countDistance(Coords c1, Coords c2) {
         double distance = Math.sqrt(Math.pow(abs(c1.getX() - c2.getX()), 2) + Math.pow(abs(c1.getY() - c2.getY()), 2));
         Random r = new Random();
-        distance = r.nextGaussian() * Math.sqrt(1.2) + distance;
+        distance = r.nextGaussian() * Math.sqrt(SIGMA) + distance;
         return distance;
     }
 

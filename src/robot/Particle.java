@@ -63,8 +63,8 @@ public class Particle {
 
     public void setWeight(double weight) {
         this.weight = weight;
-        System.out.println("weight: " + weight);
-        size = 10000 * weight;
+        //System.out.println("weight: " + weight);
+        // size = 10000 * weight;
     }
 
     public void move(double dx, double dy) {
