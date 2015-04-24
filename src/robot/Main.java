@@ -1,8 +1,6 @@
 package robot;
 
-import javafx.animation.TranslateTransition;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -11,7 +9,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -27,6 +24,8 @@ public class Main extends Application {
     Canvas canvas;
     Pane root;
     List<Circle> landmarks = new ArrayList<>();
+    Circle circle;
+    List<Circle> particles = new ArrayList<>();
 
     public void createWorld() {
         world = new World();
@@ -44,67 +43,64 @@ public class Main extends Application {
         return new Scene(root, World.WIDTH, World.HEIGHT);
     }
 
-
+    public void initRobotAndParticles() {
+        circle = new Circle(world.getRobot().getX(), world.getRobot().getY(), 30, Color.BLUEVIOLET);
+        for (Particle p : world.getParticles()) {
+            Circle circle = new Circle(p.getCoords().getX(), p.getCoords().getY(), p.getSize(), Color.RED);
+            particles.add(circle);
+            root.getChildren().add(circle);
+        }
+    }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws InterruptedException {
 
         createWorld();
         Scene scene = createScene();
-        final Circle circle = new Circle(world.getRobot().getX(), world.getRobot().getY(), 30, Color.BLUEVIOLET);
-
+        initRobotAndParticles();
         final MultiplePressedKeysEventHandler keyHandler =
                 new MultiplePressedKeysEventHandler(new MultiplePressedKeysEventHandler.MultiKeyEventHandler() {
 
                     public void handle(MultiplePressedKeysEventHandler.MultiKeyEvent ke) {
                         if (ke.isPressed(KeyCode.LEFT) || ke.isPressed(KeyCode.A)) {
                             System.out.println("LEFT");
-                            world.interact(90);
-                            circle.setCenterX(world.getRobot().getX());
+                            refreshWorld(90);
+
                         }
                         if (ke.isPressed(KeyCode.RIGHT) || ke.isPressed(KeyCode.A)) {
                             System.out.println("RIGHT");
-                            world.interact(270);
-                            circle.setCenterX(world.getRobot().getX());
+                            refreshWorld(270);
+
                         }
                         if (ke.isPressed(KeyCode.UP) || ke.isPressed(KeyCode.A)) {
                             System.out.println("UP");
-                            world.interact(0);
-                            circle.setCenterY(world.getRobot().getY());
+                            refreshWorld(0);
+
                         }
                         if (ke.isPressed(KeyCode.DOWN) || ke.isPressed(KeyCode.A)) {
                             System.out.println("DOWN");
-                            world.interact(180);
-                            circle.setCenterY(world.getRobot().getY());
+                            refreshWorld(180);
                         }
-                        if (ke.isPressed(KeyCode.LEFT)  && ke.isPressed(KeyCode.UP)) {
+                        if (ke.isPressed(KeyCode.LEFT) && ke.isPressed(KeyCode.UP)) {
                             System.out.println("LEFT + UP");
-                            world.interact(45);
-                            circle.setCenterX(world.getRobot().getX());
-                            circle.setCenterY(world.getRobot().getY());
+                            refreshWorld(45);
+
                             // circle.setCenterX(circle.getCenterX() - KEYBOARD_MOVEMENT_DELTA);
                         }
                         if (ke.isPressed(KeyCode.RIGHT) && ke.isPressed(KeyCode.UP)) {
                             System.out.println("RIGHT + UP");
-                            world.interact(315);
-                            circle.setCenterX(world.getRobot().getX());
-                            circle.setCenterY(world.getRobot().getY());
+                            refreshWorld(315);
                             //circle.setCenterX(circle.getCenterX() + KEYBOARD_MOVEMENT_DELTA);
                         }
 
                         if (ke.isPressed(KeyCode.RIGHT) && ke.isPressed(KeyCode.DOWN)) {
                             System.out.println("RIGHT + DOWN");
-                            world.interact(225);
-                            circle.setCenterX(world.getRobot().getX());
-                            circle.setCenterY(world.getRobot().getY());
-                           // circle.setCenterY(circle.getCenterY() - KEYBOARD_MOVEMENT_DELTA);
+                            refreshWorld(225);
+                            // circle.setCenterY(circle.getCenterY() - KEYBOARD_MOVEMENT_DELTA);
                         }
-                        if (ke.isPressed(KeyCode.LEFT)  && ke.isPressed(KeyCode.DOWN)) {
+                        if (ke.isPressed(KeyCode.LEFT) && ke.isPressed(KeyCode.DOWN)) {
                             System.out.println("LEFT + DOWN");
-                            world.interact(135);
-                            circle.setCenterX(world.getRobot().getX());
-                            circle.setCenterY(world.getRobot().getY());
-                           // circle.setCenterY(circle.getCenterY() + KEYBOARD_MOVEMENT_DELTA);
+                            refreshWorld(135);
                         }
                     }
                 });
@@ -115,17 +111,26 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent event) {
                 createLandmark(event.getX(), event.getY());
+                world.refresh();
+                drawParticles();
             }
         });
 
         drawParticles();
         Random r = new Random();
-        double x = (double)World.WIDTH * r.nextDouble();
-        double y = (double)World.HEIGHT * r.nextDouble();
+        double x = (double) World.WIDTH * r.nextDouble();
+        double y = (double) World.HEIGHT * r.nextDouble();
         createLandmark(x, y);
         root.getChildren().add(circle);
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    public void refreshWorld(int angle) {
+        world.interact(angle);
+        circle.setCenterX(world.getRobot().getX());
+        circle.setCenterY(world.getRobot().getY());
+        drawParticles();
     }
 
     public void createLandmark(double x, double y) {
@@ -138,20 +143,25 @@ public class Main extends Application {
             public void handle(MouseEvent event) {
                 root.getChildren().remove(circle);
                 landmarks.remove(circle);
-                world.removeLanmark(circle.getCenterX(), circle.getCenterY());
+                world.removeLandmark(circle.getCenterX(), circle.getCenterY());
+                world.refresh();
+                drawParticles();
             }
         });
     }
 
     public void drawParticles() {
-        for(Particle p: world.generateParticles()) {
-            Circle circle = new Circle(p.getCoords().getX(), p.getCoords().getY(), 1, Color.RED);
-            root.getChildren().add(circle);
+        for (Particle p : world.getParticles()) {
+            particles.get(world.getParticles().indexOf(p)).setCenterX(p.getX());
+            particles.get(world.getParticles().indexOf(p)).setCenterY(p.getY());
+            particles.get(world.getParticles().indexOf(p)).setRadius(p.getSize());
+
         }
     }
 
 
     public static void main(String[] args) {
         launch(args);
-    }
+
+     }
 }

@@ -29,6 +29,7 @@ public class Robot {
         return coords.getY();
     }
     public void sense(double distance) {
+        System.out.println("ROBOT: " + distance);
         this.distance = distance;
     }
 
@@ -39,5 +40,13 @@ public class Robot {
     public void move(double dx, double dy) {
         coords.setX(getX() + dx);
         coords.setY(getY() + dy);
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
     }
 }
