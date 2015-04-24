@@ -103,8 +103,8 @@ public class World {
             System.out.println("index: " + index);
             particles.get(j).setWeight(1.0 / particles.size());
             Coords coords = particlesCopy.get(index).getCoords();
-            coords.setX(coords.getX());//+ r.nextGaussian() * Math.sqrt(SIGMA) -0.5);
-            coords.setY(coords.getY());//+ r.nextGaussian() * Math.sqrt(SIGMA) -0.5);
+            coords.setX(coords.getX() + r.nextGaussian() * Math.sqrt(SIGMA) - 0.5);
+            coords.setY(coords.getY() + r.nextGaussian() * Math.sqrt(SIGMA) - 0.5);
             particles.get(j).setCoords(coords);
             System.out.println(particles.get(j).getCoords());
         }
@@ -120,17 +120,23 @@ public class World {
                 p.sense(countDistance(p.getCoords(), coords));
                // System.out.println("Distance: " + p.getSensorMeasurement());
                 double xx = 1;/// Math.sqrt(sigma * 2 * Math.PI);
-                double yy = (-1 * Math.pow((p.getSensorMeasurement() - robot.getSensorMeasurement()) / (WIDTH * Math.sqrt(2)), 2)) / (2 * sigma);
-                System.out.println("yy: " + yy);
-                p.setTempWeight(p.getTempWeight() * xx * Math.exp(yy));
+                double yy = (-1 * Math.pow((p.getSensorMeasurement() - robot.getSensorMeasurement()) / (WIDTH * Math.sqrt(0.05)), 2)) / (2 * sigma);
+                //     System.out.println("yy: " + yy);
+                //  p.setTempWeight(p.getTempWeight() * xx * Math.exp(yy));
+                p.setTempWeight(xx * Math.exp(yy));
                 W += p.getTempWeight();
                 //System.out.println("p.tempweight: " + p.getTempWeight());
             }
+//            if (p.getX()<0 || p.getX()>WIDTH ||p.getY()<0 || p.getY()>HEIGHT)
+//                p.setTempWeight(0.0);
         }
         //System.out.println("w: " + W);
+
         if (W == 0.0) {
             for (Particle p : particles) {
                 p.setWeight(1.0 / particles.size());
+//                particles = new ArrayList<>();
+//                generateParticles();
             }
         } else {
             for (Particle p : particles) {
@@ -139,7 +145,6 @@ public class World {
         }
 
         resample();
-
     }
 
     public double countDistance(Coords c1, Coords c2) {
