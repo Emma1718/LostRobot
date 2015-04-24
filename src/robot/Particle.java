@@ -20,7 +20,7 @@ public class Particle {
         this.distance = particle.distance;
         this.weight = particle.weight;
         this.coords = particle.coords;
-        this.size = 10;
+        this.size = 40;
         this.tempWeight = particle.tempWeight;
     }
 
