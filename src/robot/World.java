@@ -15,8 +15,8 @@ public class World {
     public static int HEIGHT = 400;
     public static int WIDTH = 500;
     public static int PARTICLES_NUMBER = 5000;
-    public static double NOISE_LEVEL = 0.1;
-    public static double SIGMA = 2.0;
+    public static double NOISE_LEVEL = 0.001;
+    public static double SIGMA = 1.0;
 
     public World() {
         Random r = new Random();
@@ -66,6 +66,7 @@ public class World {
 //            System.out.println("p.getWeight: " + p.getWeight());
 //            System.out.println("p.getCoords.getX: " + p.getCoords().getX());
 //            System.out.println("p.getCoords.getY: " + p.getCoords().getY());
+//            System.out.println("robot.getSensorMeasurement: " + robot.getSensorMeasurement());
 //            System.out.println("--------");
 //
 //        }
@@ -112,11 +113,15 @@ public class World {
     public void refresh() {
         double W = 0.0;
         double sigma = Math.pow(0.9, 2);
+        robot.sense(countDistance(robot.getCoords(), landmarksList.get(0)));
         for (Particle p : particles) {
             for (Coords coords : landmarksList) {
+                //System.out.println("Landmark: " + coords);
                 p.sense(countDistance(p.getCoords(), coords));
-                double xx = 1 / Math.sqrt(sigma * 2 * Math.PI);
-                double yy = (-1 * Math.pow((p.getSensorMeasurement() - countDistance(robot.getCoords(), coords)), 2)) / (2 * sigma);
+               // System.out.println("Distance: " + p.getSensorMeasurement());
+                double xx = 1;/// Math.sqrt(sigma * 2 * Math.PI);
+                double yy = (-1 * Math.pow((p.getSensorMeasurement() - robot.getSensorMeasurement())/500, 2)) / (2 * sigma);
+                System.out.println("yy: " + yy);
                 p.setTempWeight(p.getTempWeight() * xx * Math.exp(yy));
                 W += p.getTempWeight();
                 //System.out.println("p.tempweight: " + p.getTempWeight());
@@ -133,7 +138,7 @@ public class World {
             }
         }
 
-        resample();
+        //resample();
 
     }
 
@@ -159,6 +164,7 @@ public class World {
             Random r = new Random();
             double x = (double) WIDTH * r.nextDouble();
             double y = (double) HEIGHT * r.nextDouble();
+            System.out.println("generate particle " + i +": " + x + " " + y);
             particle.setCoords(new Coords(x, y));
             particles.add(particle);
         }
