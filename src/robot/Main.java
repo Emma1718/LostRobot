@@ -44,7 +44,7 @@ public class Main extends Application {
     }
 
     public void initRobotAndParticles() {
-        circle = new Circle(world.getRobot().getX(), world.getRobot().getY(), 30, Color.BLUEVIOLET);
+        circle = new Circle(world.getRobot().getX(), world.getRobot().getY(), 10, Color.BLACK);
         for (Particle p : world.getParticles()) {
             Circle circle = new Circle(p.getCoords().getX(), p.getCoords().getY(), p.getSize(), Color.RED);
             particles.add(circle);
@@ -75,7 +75,6 @@ public class Main extends Application {
                         if (ke.isPressed(KeyCode.UP) || ke.isPressed(KeyCode.A)) {
                             System.out.println("UP");
                             refreshWorld(0);
-
                         }
                         if (ke.isPressed(KeyCode.DOWN) || ke.isPressed(KeyCode.A)) {
                             System.out.println("DOWN");

@@ -14,7 +14,7 @@ public class World {
     public List<Particle> particles = new ArrayList<>();
     public static int HEIGHT = 400;
     public static int WIDTH = 500;
-    public static int PARTICLES_NUMBER = 20000;
+    public static int PARTICLES_NUMBER = 5000;
     public static double NOISE_LEVEL = 0.1;
 
     public World() {
@@ -45,33 +45,40 @@ public class World {
             newY = 0;
         }
         Random r = new Random();
-        double noiseX = r.nextGaussian() * Math.sqrt(1) * newX * NOISE_LEVEL + newX;
-        double noiseY = r.nextGaussian() * Math.sqrt(1) * newY * NOISE_LEVEL + newY;
+        double noiseX = r.nextGaussian() * Math.sqrt(1) + newX;
+        double noiseY = r.nextGaussian() * Math.sqrt(1) + newY;
 
         robot.move(noiseX, noiseY);
         for (Particle p : particles) {
-            double noiseXX = r.nextGaussian() * Math.sqrt(1) * newX * NOISE_LEVEL + newX;
-            double noiseYY = r.nextGaussian() * Math.sqrt(1) * newY * NOISE_LEVEL + newY;
+            double noiseXX = r.nextGaussian() * Math.sqrt(1) + newX;
+            double noiseYY = r.nextGaussian() * Math.sqrt(1) + newY;
             p.move(noiseXX, noiseYY);
         }
 
         refresh();
-        resample();
-        for (Particle p : particles) {
-            System.out.println("p: " + p);
-            System.out.println("p.getX: " + p.getX());
-            System.out.println("p.getY: " + p.getY());
-            System.out.println("p.getSensorMeasurement: " + p.getSensorMeasurement());
-            System.out.println("p.getTempWeight: " + p.getTempWeight());
-            System.out.println("p.getWeight: " + p.getWeight());
-            System.out.println("p.getCoords.getX: " + p.getCoords().getX());
-            System.out.println("p.getCoords.getY: " + p.getCoords().getY());
-            System.out.println("--------");
-
-        }
+//        for (Particle p : particles) {
+//            System.out.println("p: " + p);
+//            System.out.println("p.getX: " + p.getX());
+//            System.out.println("p.getY: " + p.getY());
+//            System.out.println("p.getSensorMeasurement: " + p.getSensorMeasurement());
+//            System.out.println("p.getTempWeight: " + p.getTempWeight());
+//            System.out.println("p.getWeight: " + p.getWeight());
+//            System.out.println("p.getCoords.getX: " + p.getCoords().getX());
+//            System.out.println("p.getCoords.getY: " + p.getCoords().getY());
+//            System.out.println("--------");
+//
+//        }
     }
 
     private void resample() {
+
+        Collections.sort(particles, new Comparator<Particle>() {
+            @Override
+            public int compare(Particle o1, Particle o2) {
+                return Double.compare(o2.getWeight(), o1.getWeight());
+            }
+        });
+
         Random r = new Random();
         double sum = 0.0;
         double dist[] = new double[PARTICLES_NUMBER];
@@ -84,11 +91,14 @@ public class World {
             Particle part = new Particle(p);
             particlesCopy.add(part);
         }
-        System.out.println(1.0 / particles.size());
-        System.out.println(r.nextDouble());
+        System.out.println(Arrays.toString(dist));
+       // System.out.println(1.0 / particles.size());
+
         for (int j = 0; j < particles.size(); j++) {
-            index = abs(Arrays.binarySearch(dist, r.nextDouble())) % particles.size();
-            System.out.println("index: " + index);
+            double d = r.nextDouble();
+            System.out.println(d);
+            index = abs(Arrays.binarySearch(dist, d)) % particles.size();
+            //System.out.println("index: " + index);
             particles.get(j).setWeight(1.0 / particles.size());
             Coords coords = particlesCopy.get(index).getCoords();
             coords.setX(coords.getX() + r.nextGaussian() * Math.sqrt(1) * coords.getX() * NOISE_LEVEL);
@@ -103,14 +113,14 @@ public class World {
         for (Particle p : particles) {
             for (Coords coords : landmarksList) {
                 p.sense(countDistance(p.getCoords(), coords));
-                double xx = 1 / Math.sqrt(2 * Math.PI);
+                double xx = 1 / Math.sqrt(sigma*2 * Math.PI);
                 double yy = (-1 * Math.pow((p.getSensorMeasurement() - countDistance(robot.getCoords(), coords)), 2)) / (2 * sigma);
-                p.setTempWeight(xx * Math.exp(yy));
+                p.setTempWeight(p.getTempWeight()*xx * Math.exp(yy));
                 W += p.getTempWeight();
-                System.out.println("p.tempweight: " + p.getTempWeight());
+                //System.out.println("p.tempweight: " + p.getTempWeight());
             }
         }
-        System.out.println("w: " + W);
+        //System.out.println("w: " + W);
         if (W == 0.0) {
             for (Particle p : particles) {
                 p.setWeight(1.0 / particles.size());
@@ -121,19 +131,14 @@ public class World {
             }
         }
 
-        Collections.sort(particles, new Comparator<Particle>() {
-            @Override
-            public int compare(Particle o1, Particle o2) {
-                return Double.compare(o2.getWeight(), o1.getWeight());
-            }
-        });
+        //resample();
 
     }
 
     public double countDistance(Coords c1, Coords c2) {
         double distance = Math.sqrt(Math.pow(abs(c1.getX() - c2.getX()), 2) + Math.pow(abs(c1.getY() - c2.getY()), 2));
         Random r = new Random();
-        distance = r.nextGaussian() * Math.sqrt(1.2) * distance * NOISE_LEVEL + distance;
+        distance = r.nextGaussian() * Math.sqrt(1.2) + distance;
         return distance;
     }
 
