@@ -1,12 +1,14 @@
 package robot;
 
+import java.util.List;
+
 /**
  * Created by Paulina on 2015-04-23.
  */
 public class Robot {
     private double distance;
     private Coords coords;
-
+List<Double> distances;
     public Robot(Coords coords) {
         this.coords = coords;
     }
@@ -28,13 +30,12 @@ public class Robot {
         return coords.getY();
     }
 
-    public void sense(double distance) {
-        System.out.println("ROBOT: " + distance);
-        this.distance = distance;
+    public void sense(List<Double> distance) {
+        this.distances = distance;
     }
 
-    public double getSensorMeasurement() {
-        return distance;
+    public List<Double> getSensorMeasurement() {
+        return distances;
     }
 
     public void move(double dx, double dy) {

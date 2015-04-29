@@ -17,19 +17,12 @@ public class World {
     public static int WIDTH = 700;
     public static int PARTICLES_NUMBER = 10000;
     public static double NOISE_LEVEL = 0.001;
-    public static double SIGMA = 3.0;
-    Writer writer = null;
+    public static double SIGMA = 5.0;
 
     public World() {
         Random r = new Random();
         robot = new Robot(new Coords((double) WIDTH * r.nextDouble(), (double) HEIGHT * r.nextDouble()));
         generateParticles();
-        try {
-            writer = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream("C:\\Users\\Paulina\\Desktop\\filename.txt"), "utf-8"));
-        } catch (UnsupportedEncodingException | FileNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
     public List<Particle> getParticles() {
@@ -40,11 +33,8 @@ public class World {
         return robot;
     }
 
-    public void moveRobot(double dx, double dy) {
 
-    }
-
-    public void interact(int angle) throws IOException {
+    public void interact(int angle) {
         double newX = -3 * Math.sin(angle * Math.PI / 180);
         double newY = -3 * Math.cos(angle * Math.PI / 180);
 
@@ -63,37 +53,31 @@ public class World {
             double noiseYY = r.nextGaussian() * Math.sqrt(SIGMA) - 0.5 + newY;
             p.move(noiseXX, noiseYY);
         }
-        robot.sense(countDistance(robot.getCoords(), landmarksList.get(0)));
-        // System.out.println("DISTANCE: " + robot.getSensorMeasurement());
 
-        writer.write("DISTANCE: " + robot.getSensorMeasurement());
-
-        for (Particle p : particles) {
-            double dist = countDistance(p.getCoords(), landmarksList.get(0));
-            //System.out.println("coords: " + p.getCoords() + " dist: " + dist);
-            //writer.write("coords: " + p.getCoords() + " dist: " + dist + "\n");
-            p.setWeight(wGauss(dist, robot.getSensorMeasurement()));
-        }
-        double W = 0.0;
-        for (Particle p : particles) {
-            W += p.getWeight();
-        }
-        for (Particle p : particles) {
-            double newW = p.getWeight() / W;
-            p.setWeight(newW);
-        }
-
-
-//        Collections.sort(particles, new Comparator<Particle>() {
-//            @Override
-//            public int compare(Particle o1, Particle o2) {
-//                return Double.compare(o2.getWeight(), o1.getWeight());
-//            }
-//        });
-//        for (Particle p : particles) {
-//          //  System.out.println("newW: " + p.getWeight());
+        refresh();
+//        List<Double> distances = new ArrayList<>();
+//        for(Coords coords: landmarksList) {
+//            distances.add(countDistance(robot.getCoords(), coords));
 //        }
-        resample();
+//        robot.sense(distances);
+//        for (Particle p : particles) {
+//            List<Double> dists = new ArrayList<>();
+//            for(Coords c: landmarksList) {
+//                double dist = countDistance(p.getCoords(), c);
+//                dists.add(dist);
+//            }
+//            p.setWeight(wGauss(dists, robot.getSensorMeasurement()));
+//        }
+//        double W = 0.0;
+//        for (Particle p : particles) {
+//            W += p.getWeight();
+//        }
+//        for (Particle p : particles) {
+//            double newW = p.getWeight() / W;
+//            p.setWeight(newW);
+//        }
+//
+//        resample();
 
 
 //
@@ -113,7 +97,7 @@ public class World {
 //        }
     }
 
-    private void resample() throws IOException {
+    private void resample() {
 
         Collections.sort(particles, new Comparator<Particle>() {
             @Override
@@ -127,111 +111,74 @@ public class World {
         double dist[] = new double[PARTICLES_NUMBER];
         int i = 0;
         int index = 0;
-        //List<Particle> particlesCopy = new ArrayList<>(particles.size());
         for (Particle p : particles) {
             sum += p.getWeight();
             dist[i++] = sum;
-            //Particle part = new Particle(p);
-            // particlesCopy.add(part);
         }
 
-//        for (int j = 0; j < dist.length; j++) {
-//            dist[j] *= 100;
-//        }
-        //System.out.println(Arrays.toString(dist));
-        // System.out.println(1.0 / particles.size());
         Map<Integer, Integer> repeated = new HashMap<>();
 
         for (int j = 0; j < particles.size(); j++) {
             double d = r.nextDouble();
-            //System.out.println(d);
             index = abs(Arrays.binarySearch(dist, d)) % particles.size();
-            //System.out.println("index: " + index);
             if (repeated.containsKey(index)) {
                 repeated.put(index, repeated.get(index) + 1);
             } else {
                 repeated.put(index, 1);
             }
-
-
         }
 
         List<Particle> newParticles = new ArrayList<>();
         for (int xx : repeated.keySet()) {
-            // System.out.println("key: " + xx + " " + repeated.get(xx));
-            //            particles.get(j).setWeight(1.0 / particles.size());
             for (int z = 0; z < repeated.get(xx); z++) {
                 Coords coords = particles.get(xx).getCoords();
-
-                //coords.setX(coords.getX() + r.nextGaussian()*2);// * Math.sqrt(SIGMA) - 0.5);
-                //coords.setY(coords.getY() + r.nextGaussian()*2);// * Math.sqrt(SIGMA) - 0.5);
                 Random rr = new Random();
-                double rrGauss = r.nextGaussian() * Math.sqrt(SIGMA) - 0.5;
-                //System.out.println("rrGauss: " + rrGauss);
+                double rrGauss = rr.nextGaussian() * Math.sqrt(SIGMA) - 0.5;
                 Particle p = new Particle();
-
                 p.setCoords(new Coords(coords.getX() + rrGauss, coords.getY() + rrGauss));
-                //System.out.println("from: " + coords + " to: " + p.getCoords());
                 newParticles.add(p);
             }
-//            Coords coords = particlesCopy.get(index).getCoords();
-//            coords.setX(coords.getX() + r.nextGaussian() * Math.sqrt(SIGMA) - 0.5);
-//            coords.setY(coords.getY() + r.nextGaussian() * Math.sqrt(SIGMA) - 0.5);
-//            particles.get(j).setCoords(coords);
-//           // System.out.println(particles.get(j).getCoords());
 //        }
         }
         particles.clear();
         particles = new ArrayList<>(newParticles);
-        for (Particle pp : particles) {
-            //    System.out.println("new particle: " + pp.getCoords() + " " + countDistance(pp.getCoords(), landmarksList.get(0)));
-            // writer.write("new particle: " + pp.getCoords() + " " + countDistance(pp.getCoords(), landmarksList.get(0)) + "\n");
-        }
-//writer.write("------------------------------------------------------------------------");
+
     }
 
-    public double wGauss(double a, double b) {
-        double error = a - b;
-        // System.out.println("error: " + error);
-        double w = Math.exp(-((Math.pow(error, 2)) / (2 * Math.pow(0.9, 2))));
-        //  System.out.println("w: " + w);
-        return w;
+    public double wGauss(List<Double> a, List<Double> b) {
+        double result = 1;
+        for(double d: a) {
+            double error = d - b.get(a.indexOf(d));
+            double w = Math.exp(-((Math.pow(error, 2)) / (2 * Math.pow(0.9, 2))));
+            result*=w;
+        }
+        return result;
     }
 
     public void refresh() {
-        double W = 0.0;
-        double sigma = Math.pow(0.9, 2);
+        List<Double> distances = new ArrayList<>();
+        for(Coords coords: landmarksList) {
+            distances.add(countDistance(robot.getCoords(), coords));
+        }
+        robot.sense(distances);
         for (Particle p : particles) {
-            for (Coords coords : landmarksList) {
-                //System.out.println("Landmark: " + coords);
-                p.sense(countDistance(p.getCoords(), coords));
-                // System.out.println("Distance: " + p.getSensorMeasurement());
-                double xx = 1;/// Math.sqrt(sigma * 2 * Math.PI);
-                double yy = (-1 * Math.pow((p.getSensorMeasurement() - robot.getSensorMeasurement()) / (WIDTH * Math.sqrt(0.05)), 2)) / (2 * sigma);
-                //     System.out.println("yy: " + yy);
-                //  p.setTempWeight(p.getTempWeight() * xx * Math.exp(yy));
-                p.setTempWeight(xx * Math.exp(yy));
-                W += p.getTempWeight();
-                //System.out.println("p.tempweight: " + p.getTempWeight());
+            List<Double> dists = new ArrayList<>();
+            for(Coords c: landmarksList) {
+                double dist = countDistance(p.getCoords(), c);
+                dists.add(dist);
             }
-//            if (p.getX()<0 || p.getX()>WIDTH ||p.getY()<0 || p.getY()>HEIGHT)
-//                p.setTempWeight(0.0);
+            p.setWeight(wGauss(dists, robot.getSensorMeasurement()));
         }
-        //System.out.println("w: " + W);
-
-        if (W == 0.0) {
-            for (Particle p : particles) {
-                p.setWeight(1.0 / particles.size());
-//                particles = new ArrayList<>();
-//                generateParticles();
-            }
-        } else {
-            for (Particle p : particles) {
-                p.setWeight(p.getTempWeight() / W);
-            }
+        double W = 0.0;
+        for (Particle p : particles) {
+            W += p.getWeight();
+        }
+        for (Particle p : particles) {
+            double newW = p.getWeight() / W;
+            p.setWeight(newW);
         }
 
-        //    resample();
+        resample();
     }
 
     public double countDistance(Coords c1, Coords c2) {

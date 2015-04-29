@@ -111,7 +111,9 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent event) {
                 createLandmark(event.getX(), event.getY());
+
                 world.refresh();
+
                 drawParticles();
             }
         });
@@ -127,14 +129,11 @@ public class Main extends Application {
     }
 
     public void refreshWorld(int angle) {
-        try {
             world.interact(angle);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
         circle.setCenterX(world.getRobot().getX());
         circle.setCenterY(world.getRobot().getY());
-       // particles.clear();
+        // particles.clear();
         drawParticles();
     }
 
@@ -156,16 +155,16 @@ public class Main extends Application {
     }
 
     public void drawParticles() {
-            for (Circle c : particles) {
-                root.getChildren().remove(c);
-            }
+        for (Circle c : particles) {
+            root.getChildren().remove(c);
+        }
         particles.clear();
         for (Particle p : world.getParticles()) {
             Circle circle = new Circle(p.getCoords().getX(), p.getCoords().getY(), p.getSize(), Color.RED);
             particles.add(circle);
             root.getChildren().add(circle);
 
-       }
+        }
         System.out.println(particles.size());
     }
 
@@ -173,5 +172,5 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
 
-     }
+    }
 }
