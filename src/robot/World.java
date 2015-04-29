@@ -55,33 +55,6 @@ public class World {
         }
 
         refresh();
-//        List<Double> distances = new ArrayList<>();
-//        for(Coords coords: landmarksList) {
-//            distances.add(countDistance(robot.getCoords(), coords));
-//        }
-//        robot.sense(distances);
-//        for (Particle p : particles) {
-//            List<Double> dists = new ArrayList<>();
-//            for(Coords c: landmarksList) {
-//                double dist = countDistance(p.getCoords(), c);
-//                dists.add(dist);
-//            }
-//            p.setWeight(wGauss(dists, robot.getSensorMeasurement()));
-//        }
-//        double W = 0.0;
-//        for (Particle p : particles) {
-//            W += p.getWeight();
-//        }
-//        for (Particle p : particles) {
-//            double newW = p.getWeight() / W;
-//            p.setWeight(newW);
-//        }
-//
-//        resample();
-
-
-//
-//        refresh();
 //        for (Particle p : particles) {
 //            System.out.println("p: " + p);
 //            System.out.println("p.getX: " + p.getX());
