@@ -13,6 +13,7 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -115,7 +116,7 @@ public class Main extends Application {
             }
         });
 
-        drawParticles();
+        //drawParticles();
         Random r = new Random();
         double x = (double) World.WIDTH * r.nextDouble();
         double y = (double) World.HEIGHT * r.nextDouble();
@@ -126,9 +127,14 @@ public class Main extends Application {
     }
 
     public void refreshWorld(int angle) {
-        world.interact(angle);
+        try {
+            world.interact(angle);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         circle.setCenterX(world.getRobot().getX());
         circle.setCenterY(world.getRobot().getY());
+       // particles.clear();
         drawParticles();
     }
 
@@ -150,12 +156,17 @@ public class Main extends Application {
     }
 
     public void drawParticles() {
+            for (Circle c : particles) {
+                root.getChildren().remove(c);
+            }
+        particles.clear();
         for (Particle p : world.getParticles()) {
-            particles.get(world.getParticles().indexOf(p)).setCenterX(p.getX());
-            particles.get(world.getParticles().indexOf(p)).setCenterY(p.getY());
-            particles.get(world.getParticles().indexOf(p)).setRadius(p.getSize());
+            Circle circle = new Circle(p.getCoords().getX(), p.getCoords().getY(), p.getSize(), Color.RED);
+            particles.add(circle);
+            root.getChildren().add(circle);
 
-        }
+       }
+        System.out.println(particles.size());
     }
 
 

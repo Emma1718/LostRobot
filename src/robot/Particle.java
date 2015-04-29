@@ -14,6 +14,7 @@ public class Particle {
     public Particle() {
         size = 1;
         tempWeight = 1;
+        weight = 1;
     }
 
     public Particle(Particle particle) {
@@ -63,8 +64,8 @@ public class Particle {
 
     public void setWeight(double weight) {
         this.weight = weight;
-        System.out.println("weight: " + weight);
-        size = 10000 * weight;
+       // System.out.println("weight: " + weight);
+        //size = 1000 * weight;
     }
 
     public void move(double dx, double dy) {
