@@ -69,8 +69,12 @@ public class Particle {
     }
 
     public void move(double dx, double dy) {
-        coords.setX(getX() + dx);
-        coords.setY(getY() + dy);
+
+            coords.setX(getX() + dx);
+
+
+            coords.setY(getY() + dy);
+
     }
 
     public void setTempWeight(double tempWeight) {

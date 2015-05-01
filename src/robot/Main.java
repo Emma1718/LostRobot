@@ -38,19 +38,20 @@ public class Main extends Application {
         canvas = new Canvas(World.WIDTH, World.HEIGHT);
         canvas.setFocusTraversable(true);
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.setFill(Color.CORNFLOWERBLUE);
+        gc.setFill(Color.BLUE);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         root.getChildren().add(canvas);
         return new Scene(root, World.WIDTH, World.HEIGHT);
     }
 
     public void initRobotAndParticles() {
-        circle = new Circle(world.getRobot().getX(), world.getRobot().getY(), 10, Color.BLACK);
         for (Particle p : world.getParticles()) {
             Circle circle = new Circle(p.getCoords().getX(), p.getCoords().getY(), p.getSize(), Color.RED);
             particles.add(circle);
             root.getChildren().add(circle);
         }
+        circle = new Circle(world.getRobot().getX(), world.getRobot().getY(), 15, Color.BLACK);
+
     }
 
     @Override
@@ -78,7 +79,7 @@ public class Main extends Application {
                             refreshWorld(0);
                         }
                         if (ke.isPressed(KeyCode.DOWN) || ke.isPressed(KeyCode.A)) {
-                            System.out.println("DOWN");
+                           // System.out.println("DOWN");
                             refreshWorld(180);
                         }
                         if (ke.isPressed(KeyCode.LEFT) && ke.isPressed(KeyCode.UP)) {
@@ -119,9 +120,6 @@ public class Main extends Application {
         });
 
         //drawParticles();
-        Random r = new Random();
-        double x = (double) World.WIDTH * r.nextDouble();
-        double y = (double) World.HEIGHT * r.nextDouble();
         //createLandmark(x, y);
         root.getChildren().add(circle);
         primaryStage.setScene(scene);
@@ -131,14 +129,15 @@ public class Main extends Application {
     public void refreshWorld(int angle) {
             world.interact(angle);
 
-        circle.setCenterX(world.getRobot().getX());
-        circle.setCenterY(world.getRobot().getY());
         // particles.clear();
         drawParticles();
+
+        circle.setCenterX(world.getRobot().getX());
+        circle.setCenterY(world.getRobot().getY());
     }
 
     public void createLandmark(double x, double y) {
-        final Circle circle = new Circle(x, y, 10, Color.YELLOW);
+        final Circle circle = new Circle(x, y, 9, Color.YELLOW);
         root.getChildren().add(circle);
         landmarks.add(circle);
         world.addLandmark(x, y);
