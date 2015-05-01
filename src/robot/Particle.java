@@ -12,7 +12,7 @@ public class Particle {
     private double tempWeight;
 
     public Particle() {
-        size = 1;
+        size = 1.5;
         tempWeight = 1;
         weight = 1;
     }

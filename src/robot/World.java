@@ -13,11 +13,11 @@ public class World {
     List<Coords> landmarksList = new ArrayList<>();
     Robot robot;
     public List<Particle> particles = new ArrayList<>();
-    public static int HEIGHT = 700;
+    public static int HEIGHT = 500;
     public static int WIDTH = 700;
     public static int PARTICLES_NUMBER = 10000;
     public static double NOISE_LEVEL = 0.001;
-    public static double SIGMA = 5.0;
+    public static double SIGMA = 1.0;
 
     public World() {
         Random r = new Random();
@@ -35,10 +35,14 @@ public class World {
 
 
     public void interact(int angle) {
-        double newX = -3 * Math.sin(angle * Math.PI / 180);
-        double newY = -3 * Math.cos(angle * Math.PI / 180);
-
         Random r = new Random();
+        double mod = r.nextDouble();
+        if(mod > 0.15) {
+            mod = 1;
+        }
+        double newX = -3 * Math.sin(angle*mod * Math.PI / 180);
+        double newY = -3 * Math.cos(angle * mod *Math.PI / 180);
+
         double noiseX = r.nextGaussian() * Math.sqrt(SIGMA) - 0.5 + newX;
         double noiseY = r.nextGaussian() * Math.sqrt(SIGMA) -0.5 + newY;
         if (getRobot().getX() + noiseX < 0 || getRobot().getX() + noiseX > WIDTH) {
@@ -48,9 +52,30 @@ public class World {
             noiseY = 0;
         }
         robot.move(noiseX, noiseY);
+        Coords[] poss = new Coords[]{new Coords(-newX, -newY), new Coords(newX, - newY) , new Coords(-newX, newY)};
+        double mod2 = r.nextDouble();
+
+        double newXX = newX;//-3 * Math.sin(angle*mod*mod2 * Math.PI / 180);
+        double newYY = newY;
+        if(mod2 < 0.2) {
+            int ind = r.nextInt(3);
+            newXX = poss[ind].getX();
+            newYY = poss[ind].getY();
+        }
+
+       // double newXX = -3 * Math.sin(angle*mod*mod2 * Math.PI / 180);
+       // double newYY = -3 * Math.cos(angle*mod * mod2 *Math.PI / 180);
+
+
         for (Particle p : particles) {
-            double noiseXX = r.nextGaussian() * Math.sqrt(SIGMA) - 0.5 + newX;
-            double noiseYY = r.nextGaussian() * Math.sqrt(SIGMA) - 0.5 + newY;
+            double noiseXX = r.nextGaussian() * Math.sqrt(SIGMA) - 0.5 + newXX;
+            double noiseYY = r.nextGaussian() * Math.sqrt(SIGMA) - 0.5 + newYY;
+            if (p.getX() + noiseXX < 0 || p.getX() + noiseXX > WIDTH) {
+                noiseXX = 0;
+            }
+            if (p.getY() + noiseYY < 0 ||p.getY() + noiseYY > HEIGHT) {
+                noiseYY = 0;
+            }
             p.move(noiseXX, noiseYY);
         }
 
@@ -107,8 +132,9 @@ public class World {
                 Coords coords = particles.get(xx).getCoords();
                 Random rr = new Random();
                 double rrGauss = rr.nextGaussian() * Math.sqrt(SIGMA) - 0.5;
+                double rrGauss2 = rr.nextGaussian() * Math.sqrt(SIGMA) - 0.5;
                 Particle p = new Particle();
-                p.setCoords(new Coords(coords.getX() + rrGauss, coords.getY() + rrGauss));
+                p.setCoords(new Coords(coords.getX() + rrGauss, coords.getY() + rrGauss2));
                 newParticles.add(p);
             }
 //        }

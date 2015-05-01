@@ -64,17 +64,17 @@ public class Main extends Application {
 
                     public void handle(MultiplePressedKeysEventHandler.MultiKeyEvent ke) {
                         if (ke.isPressed(KeyCode.LEFT) || ke.isPressed(KeyCode.A)) {
-                            System.out.println("LEFT");
+                          //  System.out.println("LEFT");
                             refreshWorld(90);
 
                         }
                         if (ke.isPressed(KeyCode.RIGHT) || ke.isPressed(KeyCode.A)) {
-                            System.out.println("RIGHT");
+                           // System.out.println("RIGHT");
                             refreshWorld(270);
 
                         }
                         if (ke.isPressed(KeyCode.UP) || ke.isPressed(KeyCode.A)) {
-                            System.out.println("UP");
+                           // System.out.println("UP");
                             refreshWorld(0);
                         }
                         if (ke.isPressed(KeyCode.DOWN) || ke.isPressed(KeyCode.A)) {
@@ -82,24 +82,24 @@ public class Main extends Application {
                             refreshWorld(180);
                         }
                         if (ke.isPressed(KeyCode.LEFT) && ke.isPressed(KeyCode.UP)) {
-                            System.out.println("LEFT + UP");
+                           // System.out.println("LEFT + UP");
                             refreshWorld(45);
 
                             // circle.setCenterX(circle.getCenterX() - KEYBOARD_MOVEMENT_DELTA);
                         }
                         if (ke.isPressed(KeyCode.RIGHT) && ke.isPressed(KeyCode.UP)) {
-                            System.out.println("RIGHT + UP");
+                            //System.out.println("RIGHT + UP");
                             refreshWorld(315);
                             //circle.setCenterX(circle.getCenterX() + KEYBOARD_MOVEMENT_DELTA);
                         }
 
                         if (ke.isPressed(KeyCode.RIGHT) && ke.isPressed(KeyCode.DOWN)) {
-                            System.out.println("RIGHT + DOWN");
+                            //System.out.println("RIGHT + DOWN");
                             refreshWorld(225);
                             // circle.setCenterY(circle.getCenterY() - KEYBOARD_MOVEMENT_DELTA);
                         }
                         if (ke.isPressed(KeyCode.LEFT) && ke.isPressed(KeyCode.DOWN)) {
-                            System.out.println("LEFT + DOWN");
+                           // System.out.println("LEFT + DOWN");
                             refreshWorld(135);
                         }
                     }
@@ -122,7 +122,7 @@ public class Main extends Application {
         Random r = new Random();
         double x = (double) World.WIDTH * r.nextDouble();
         double y = (double) World.HEIGHT * r.nextDouble();
-        createLandmark(x, y);
+        //createLandmark(x, y);
         root.getChildren().add(circle);
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -165,7 +165,7 @@ public class Main extends Application {
             root.getChildren().add(circle);
 
         }
-        System.out.println(particles.size());
+      ///  System.out.println(particles.size());
     }
 
 
