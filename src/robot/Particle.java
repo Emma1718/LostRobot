@@ -29,10 +29,6 @@ public class Particle {
         return size;
     }
 
-    public void setSize(double size) {
-        this.size = size;
-    }
-
     public Coords getCoords() {
         return coords;
     }
@@ -45,17 +41,8 @@ public class Particle {
         return coords.getX();
     }
 
-
     public double getY() {
         return coords.getY();
-    }
-
-    public void sense(double distance) {
-        this.distance = distance;
-    }
-
-    public double getSensorMeasurement() {
-        return distance;
     }
 
     public double getWeight() {
@@ -64,24 +51,10 @@ public class Particle {
 
     public void setWeight(double weight) {
         this.weight = weight;
-       // System.out.println("weight: " + weight);
-        //size = 1000 * weight;
     }
 
     public void move(double dx, double dy) {
-
-            coords.setX(getX() + dx);
-
-
-            coords.setY(getY() + dy);
-
-    }
-
-    public void setTempWeight(double tempWeight) {
-        this.tempWeight = tempWeight;
-    }
-
-    public double getTempWeight() {
-        return tempWeight;
+        coords.setX(getX() + dx);
+        coords.setY(getY() + dy);
     }
 }

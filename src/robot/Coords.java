@@ -32,11 +32,9 @@ public class Coords {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Coords coords = (Coords) o;
 
         return Double.compare(coords.x, x) == 0 && Double.compare(coords.y, y) == 0;
-
     }
 
     @Override

@@ -13,10 +13,8 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Main extends Application {
     private static final int KEYBOARD_MOVEMENT_DELTA = 5;
@@ -30,7 +28,6 @@ public class Main extends Application {
 
     public void createWorld() {
         world = new World();
-
     }
 
     public Scene createScene() {
@@ -51,7 +48,6 @@ public class Main extends Application {
             root.getChildren().add(circle);
         }
         circle = new Circle(world.getRobot().getX(), world.getRobot().getY(), 15, Color.BLACK);
-
     }
 
     @Override
@@ -65,42 +61,28 @@ public class Main extends Application {
 
                     public void handle(MultiplePressedKeysEventHandler.MultiKeyEvent ke) {
                         if (ke.isPressed(KeyCode.LEFT) || ke.isPressed(KeyCode.A)) {
-                          //  System.out.println("LEFT");
                             refreshWorld(90);
-
                         }
                         if (ke.isPressed(KeyCode.RIGHT) || ke.isPressed(KeyCode.A)) {
-                           // System.out.println("RIGHT");
                             refreshWorld(270);
-
                         }
                         if (ke.isPressed(KeyCode.UP) || ke.isPressed(KeyCode.A)) {
-                           // System.out.println("UP");
                             refreshWorld(0);
                         }
                         if (ke.isPressed(KeyCode.DOWN) || ke.isPressed(KeyCode.A)) {
-                           // System.out.println("DOWN");
                             refreshWorld(180);
                         }
                         if (ke.isPressed(KeyCode.LEFT) && ke.isPressed(KeyCode.UP)) {
-                           // System.out.println("LEFT + UP");
                             refreshWorld(45);
-
-                            // circle.setCenterX(circle.getCenterX() - KEYBOARD_MOVEMENT_DELTA);
                         }
                         if (ke.isPressed(KeyCode.RIGHT) && ke.isPressed(KeyCode.UP)) {
-                            //System.out.println("RIGHT + UP");
                             refreshWorld(315);
-                            //circle.setCenterX(circle.getCenterX() + KEYBOARD_MOVEMENT_DELTA);
                         }
 
                         if (ke.isPressed(KeyCode.RIGHT) && ke.isPressed(KeyCode.DOWN)) {
-                            //System.out.println("RIGHT + DOWN");
                             refreshWorld(225);
-                            // circle.setCenterY(circle.getCenterY() - KEYBOARD_MOVEMENT_DELTA);
                         }
                         if (ke.isPressed(KeyCode.LEFT) && ke.isPressed(KeyCode.DOWN)) {
-                           // System.out.println("LEFT + DOWN");
                             refreshWorld(135);
                         }
                     }
@@ -112,24 +94,18 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent event) {
                 createLandmark(event.getX(), event.getY());
-
                 world.refresh();
-
                 drawParticles();
             }
         });
 
-        //drawParticles();
-        //createLandmark(x, y);
         root.getChildren().add(circle);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
     public void refreshWorld(int angle) {
-            world.interact(angle);
-
-        // particles.clear();
+        world.interact(angle);
         drawParticles();
 
         circle.setCenterX(world.getRobot().getX());
@@ -162,14 +138,10 @@ public class Main extends Application {
             Circle circle = new Circle(p.getCoords().getX(), p.getCoords().getY(), p.getSize(), Color.RED);
             particles.add(circle);
             root.getChildren().add(circle);
-
         }
-      ///  System.out.println(particles.size());
     }
-
 
     public static void main(String[] args) {
         launch(args);
-
     }
 }

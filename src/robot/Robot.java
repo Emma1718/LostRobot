@@ -8,18 +8,14 @@ import java.util.List;
 public class Robot {
     private double distance;
     private Coords coords;
-List<Double> distances;
+    List<Double> distances;
+
     public Robot(Coords coords) {
         this.coords = coords;
     }
 
-
     public Coords getCoords() {
         return coords;
-    }
-
-    public void setCoords(Coords coords) {
-        this.coords = coords;
     }
 
     public double getX() {
@@ -41,13 +37,5 @@ List<Double> distances;
     public void move(double dx, double dy) {
         coords.setX(getX() + dx);
         coords.setY(getY() + dy);
-    }
-
-    public double getDistance() {
-        return distance;
-    }
-
-    public void setDistance(double distance) {
-        this.distance = distance;
     }
 }
