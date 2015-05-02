@@ -1,8 +1,11 @@
 package robot;
 
+import java.io.*;
 import java.util.*;
 
-import static java.lang.Math.*;
+import static java.lang.Math.PI;
+import static java.lang.Math.abs;
+import static java.lang.Math.sqrt;
 
 /**
  * Created by Paulina on 2015-04-23.
@@ -32,6 +35,7 @@ public class World {
         return robot;
     }
 
+
     public void interact(int angle) {
         Random r = new Random();
         double mod = r.nextDouble();
@@ -52,15 +56,25 @@ public class World {
         robot.move(noiseX, noiseY);
         Coords[] poss = new Coords[]{new Coords(-newX, -newY), new Coords(newX, -newY), new Coords(-newX, newY), new Coords(newX, newY),
                 new Coords(-newY, -newX), new Coords(newY, -newX), new Coords(-newY, newX), new Coords(newY, newX)};
-        double newXX;
-        double newYY;
+        double mod2 = r.nextDouble();
+
+
+//        if(mod2 < 0.2) {
+
+        // }
+
+        // double newXX = -3 * Math.sin(angle*mod*mod2 * Math.PI / 180);
+        // double newYY = -3 * Math.cos(angle*mod * mod2 *Math.PI / 180);
 
         for (Particle p : particles) {
             Random newRand = new Random();
-            int ind = newRand.nextInt(8);
-
-            newXX = poss[ind].getX();
-            newYY = poss[ind].getY();
+            double ifRand = newRand.nextDouble();
+            //int ind = 3;
+           // if(ifRand <= 0.3) {
+             int   ind = newRand.nextInt(8);
+           // }
+            double newXX = 2*poss[ind].getX();
+            double newYY = 2*poss[ind].getY();
             double noiseXX = newXX + r.nextGaussian() * Math.sqrt(SIGMA);//- 0.5 + newXX;
             double noiseYY = newYY + r.nextGaussian() * Math.sqrt(SIGMA);// - 0.5 + newYY;
             if (p.getX() + noiseXX < 0 || p.getX() + noiseXX > WIDTH) {
@@ -129,6 +143,7 @@ public class World {
 
     public double wGauss(double a, double b, double actual) {
         double result = 1;
+
         double error = a - b;
         double w = (1 / (sqrt(2 * SIGMA * PI))) * Math.exp(-((Math.pow(error, 2) / 1000) / (2 * SIGMA)));
         result = actual * w;
